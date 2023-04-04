@@ -1,5 +1,62 @@
-/** Textual markov chain generator. */
+"use strict";
 
+/** Textual markov chain generator. */
+const TEST_TEXT_1 = `We're no strangers to love
+You know the rules and so do I
+A full commitment's what I'm thinking of
+You wouldn't get this from any other guy
+I just wanna tell you how I'm feeling
+Gotta make you understand
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+We've known each other for so long
+Your heart's been aching, but you're too shy to say it 
+Inside, we both know what's been going on
+We know the game and we're gonna play it
+And if you ask me how I'm feeling
+Don't tell me you're too blind to see
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+We've known each other for so long
+Your heart's been aching, but you're too shy to say it
+Inside, we both know what's been going on
+We know the game and we're gonna play it
+I just wanna tell you how I'm feeling
+Gotta make you understand
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you`
+
+const TEST_TEXT_2 = "The cat is in the hat. The cat is the cat. The cat is a hat"
 
 class MarkovMachine {
 
@@ -27,7 +84,23 @@ class MarkovMachine {
    * */
 
   getChains() {
-    // TODO: implement this!
+
+    const chains = {};
+
+    for (let word_index in this.words) {
+      word_index = Number(word_index);
+      const current_word = this.words[word_index];
+      const next_word = this.words[word_index + 1] || null;
+
+      if (current_word in chains) {
+        chains[current_word].push(next_word);
+      }
+      else {
+        chains[current_word] = [next_word];
+      }
+    }
+
+    return chains
   }
 
 
@@ -42,3 +115,6 @@ class MarkovMachine {
     // - repeat until reaching the terminal null
   }
 }
+
+const m = new MarkovMachine(TEST_TEXT_2);
+console.log(m.chains);
