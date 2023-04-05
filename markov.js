@@ -1,6 +1,8 @@
 "use strict";
 
 /** Textual markov chain generator. */
+
+
 const TEST_TEXT_1 = `We're no strangers to love
 You know the rules and so do I
 A full commitment's what I'm thinking of
@@ -56,7 +58,7 @@ Never gonna make you cry
 Never gonna say goodbye
 Never gonna tell a lie and hurt you`
 
-const TEST_TEXT_2 = "The cat is in the hat. The cat is the cat. The cat is a hat"
+const TEST_TEXT_2 = "The cat is in the hat. The cat is the cat. The cat is a hat."
 
 class MarkovMachine {
 
@@ -82,39 +84,66 @@ class MarkovMachine {
    *  }
    * 
    * */
-
+  //get rid of snakecase
   getChains() {
 
-    const chains = {};
+    const chains = new Map();
+    //use generic for i loop
+    for (let wordIndex in this.words) {
 
-    for (let word_index in this.words) {
-      word_index = Number(word_index);
-      const current_word = this.words[word_index];
-      const next_word = this.words[word_index + 1] || null;
+      wordIndex = Number(wordIndex);
 
-      if (current_word in chains) {
-        chains[current_word].push(next_word);
+      const currentWord = this.words[wordIndex];
+      const nextWord = this.words[wordIndex + 1] || null;
+
+      if (chains.has(currentWord)) {
+        const chainWords = chains.get(currentWord);
+        chainWords.push(nextWord);
       }
       else {
-        chains[current_word] = [next_word];
+        chains.set(currentWord, [nextWord]);
       }
     }
 
-    return chains
+    return chains;
   }
 
 
   /** Return random text from chains, starting at the first word and continuing
    *  until it hits a null choice. */
-
   getText() {
-    // TODO: implement this!
+ 
+    let currWord = this.chains.keys().next().value;
+    let nextWord;
+    let text = currWord + " ";
+    //exit condition in while loop instead of if statement
+    while (true) {
 
-    // - start at the first word in the input text
-    // - find a random word from the following-words of that
-    // - repeat until reaching the terminal null
+      const wordsToChooseFrom = this.chains.get(currWord);
+      nextWord = sample(wordsToChooseFrom);
+
+      if (nextWord === null) {
+        return text;
+      }
+
+      text += nextWord + " ";
+      currWord = nextWord;
+
+    } 
   }
 }
 
-const m = new MarkovMachine(TEST_TEXT_2);
-console.log(m.chains);
+
+/** given an array, returns 1 element at random */
+function sample(arr) {
+
+  const randIndex = Math.floor(Math.random()*arr.length);
+  return arr[randIndex];
+
+}
+
+// const m = new MarkovMachine(TEST_TEXT_1);
+// console.log(m.chains);
+// console.log(m.getText());
+
+module.exports = { MarkovMachine };
